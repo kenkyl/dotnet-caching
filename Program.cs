@@ -1,5 +1,7 @@
 ﻿using System;
 using StackExchange.Redis;
+using MySql.Data;
+using MySql.Data.MySqlClient;
 
 namespace dotnet_caching
 {
@@ -23,7 +25,7 @@ namespace dotnet_caching
         static void Main(string[] args)
         {
             // establsih mysql connection 
-            
+
 
             // establish redis connection
             ConnectionMultiplexer redis = ConnectionMultiplexer.Connect($"{redisHost}:{redisPort}");
@@ -33,6 +35,22 @@ namespace dotnet_caching
             
             string value2 = dbRedis.StringGet("mykey");
             Console.WriteLine(value2);
+
+            // establish mysql connection
+            string connStr = "server=localhost;user=root;database=users;port=3306;password=password";
+            MySqlConnection conn = new MySqlConnection(connStr);
+            try
+            {
+                Console.WriteLine("Connecting to MySQL...");
+                conn.Open();
+                // Perform database operations
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            conn.Close();
+            Console.WriteLine("Done.");
 
 
             // Console.WriteLine("\nWhat is your name? ");
