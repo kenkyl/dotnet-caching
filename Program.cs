@@ -22,12 +22,22 @@ namespace dotnet_caching
 
         static void Main(string[] args)
         {
-            Console.WriteLine("\nWhat is your name? ");
-            var name = Console.ReadLine();
-            var date = DateTime.Now;
-            Console.WriteLine($"\nHello, {name}, on {date:d} at {date:t}!");
-            Console.Write("\nPress any key to exit...");
-            Console.ReadKey(true);
+            // establish redis connection
+            ConnectionMultiplexer redis = ConnectionMultiplexer.Connect($"{redisHost}:{redisPort}");
+            IDatabase dbRedis = redis.GetDatabase();
+            string value = "abcdefg";
+            dbRedis.StringSet("mykey", value);
+            
+            string value2 = dbRedis.StringGet("mykey");
+            Console.WriteLine(value2);
+
+
+            // Console.WriteLine("\nWhat is your name? ");
+            // var name = Console.ReadLine();
+            // var date = DateTime.Now;
+            // Console.WriteLine($"\nHello, {name}, on {date:d} at {date:t}!");
+            // Console.Write("\nPress any key to exit...");
+            // Console.ReadKey(true);
         }
     }
 }
