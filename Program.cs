@@ -22,6 +22,9 @@ namespace dotnet_caching
 
         static void Main(string[] args)
         {
+            // establsih mysql connection 
+            
+
             // establish redis connection
             ConnectionMultiplexer redis = ConnectionMultiplexer.Connect($"{redisHost}:{redisPort}");
             IDatabase dbRedis = redis.GetDatabase();
