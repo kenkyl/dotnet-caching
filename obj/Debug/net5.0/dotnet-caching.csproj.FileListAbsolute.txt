@@ -1,0 +1,15 @@
+/Users/kylekennedy/Workspace/sa-demos/dotnet-caching/bin/Debug/net5.0/dotnet-caching.deps.json
+/Users/kylekennedy/Workspace/sa-demos/dotnet-caching/bin/Debug/net5.0/dotnet-caching.runtimeconfig.json
+/Users/kylekennedy/Workspace/sa-demos/dotnet-caching/bin/Debug/net5.0/dotnet-caching.runtimeconfig.dev.json
+/Users/kylekennedy/Workspace/sa-demos/dotnet-caching/bin/Debug/net5.0/dotnet-caching.dll
+/Users/kylekennedy/Workspace/sa-demos/dotnet-caching/bin/Debug/net5.0/ref/dotnet-caching.dll
+/Users/kylekennedy/Workspace/sa-demos/dotnet-caching/bin/Debug/net5.0/dotnet-caching.pdb
+/Users/kylekennedy/Workspace/sa-demos/dotnet-caching/obj/Debug/net5.0/dotnet-caching.csprojAssemblyReference.cache
+/Users/kylekennedy/Workspace/sa-demos/dotnet-caching/obj/Debug/net5.0/dotnet-caching.GeneratedMSBuildEditorConfig.editorconfig
+/Users/kylekennedy/Workspace/sa-demos/dotnet-caching/obj/Debug/net5.0/dotnet-caching.AssemblyInfoInputs.cache
+/Users/kylekennedy/Workspace/sa-demos/dotnet-caching/obj/Debug/net5.0/dotnet-caching.AssemblyInfo.cs
+/Users/kylekennedy/Workspace/sa-demos/dotnet-caching/obj/Debug/net5.0/dotnet-caching.csproj.CoreCompileInputs.cache
+/Users/kylekennedy/Workspace/sa-demos/dotnet-caching/obj/Debug/net5.0/dotnet-caching.dll
+/Users/kylekennedy/Workspace/sa-demos/dotnet-caching/obj/Debug/net5.0/ref/dotnet-caching.dll
+/Users/kylekennedy/Workspace/sa-demos/dotnet-caching/obj/Debug/net5.0/dotnet-caching.pdb
+/Users/kylekennedy/Workspace/sa-demos/dotnet-caching/obj/Debug/net5.0/dotnet-caching.genruntimeconfig.cache
