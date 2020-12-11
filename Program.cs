@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Collections.Generic;
 using StackExchange.Redis;
-using MySql.Data;
 using MySql.Data.MySqlClient;
 
 namespace dotnet_caching
@@ -93,11 +92,12 @@ namespace dotnet_caching
                     //Console.WriteLine(fetchedUser);
                 }
                 rdr.Close();
-                // load cache with TTL 10 sec
-                TimeSpan ttl = new TimeSpan(0,0,10); 
-                dbRedis.StringSet($"users{userId}", fetchedUser, expiry:ttl);
+                // load cache with TTL 15 sec
+                TimeSpan ttl = new TimeSpan(0,0,15); 
+                dbRedis.StringSet($"users:{userId}", fetchedUser, expiry:ttl);
 
             } else {
+                Console.WriteLine($"Cache hit for User {userId}!");
                 fetchedUser = cacheRes.ToString();
             }
             //Console.WriteLine(fetchedUser);
@@ -128,13 +128,12 @@ namespace dotnet_caching
                 Console.WriteLine($"Error: {ex.ToString()}");
             }
 
-
-            LoadData(conn);
-            FetchUser(dbRedis, conn, 1);
-            
+            // load data into sql 
+            LoadData(conn);            
 
             while (true) {
                 Console.Write("\nEnter a command: ");
+                Console.WriteLine("");
                 var command = Console.ReadLine();
                 string[] words = command.Split(' ');
                 if (words[0].Equals("quit")) 
@@ -146,18 +145,10 @@ namespace dotnet_caching
                     (string user, int time) res = FetchUser(dbRedis, conn, id);
                     Console.WriteLine($"\nExecution time: {res.time}\nFetched user: {res.user}");
                 }
-
             }
 
             conn.Close();
             Console.WriteLine("Done.");
-
-            // Console.WriteLine("\nWhat is your name? ");
-            // var name = Console.ReadLine();
-            // var date = DateTime.Now;
-            // Console.WriteLine($"\nHello, {name}, on {date:d} at {date:t}!");
-            // Console.Write("\nPress any key to exit...");
-            // Console.ReadKey(true);
         }
     }
 }
