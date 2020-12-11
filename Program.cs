@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using StackExchange.Redis;
 using MySql.Data;
@@ -15,7 +16,7 @@ namespace dotnet_caching
 
         public override string ToString()
         {
-            return id + "--" + name + "--" + country + "--" + email;
+            return id + "," + name + "," + country + "," + email;
         }
     }
 
@@ -69,33 +70,42 @@ namespace dotnet_caching
                 string sql = $@"INSERT INTO Users (Id, Name, Country, Email) 
                     VALUES ({user.id}, '{user.name}', '{user.country}', '{user.email}')
                     ON DUPLICATE KEY UPDATE Id=Id";
-                Console.Write(sql + "\n");
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.ExecuteNonQuery();
             }
         }
 
         static (string, int) FetchUser(IDatabase dbRedis, MySqlConnection conn, int userId) {
-            int startTime = 0; 
-            int endTime = 0;
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
             string fetchedUser = "";
             // attempt to fetch from cache 
-            // if failed, fetch from db 
-            // if fetched from db, load cache 
-            // return user 
-            string sql = $"SELECT Id, Name, Country, Email FROM Users WHERE Id='{userId}'";
-            Console.Write(sql + "\n");
-            MySqlCommand cmd = new MySqlCommand(sql, conn);
-            MySqlDataReader rdr = cmd.ExecuteReader();
+            RedisValue cacheRes = dbRedis.StringGet($"users:{userId}");
+            if (cacheRes.IsNullOrEmpty) {
+                Console.WriteLine($"Cache miss for User {userId}... fetching from database");
+                // fetch from database 
+                string sql = $"SELECT Id, Name, Country, Email FROM Users WHERE Id='{userId}'";
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                MySqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    fetchedUser = rdr[0]+","+rdr[1]+","+rdr[2]+","+rdr[3];
+                    //Console.WriteLine(fetchedUser);
+                }
+                rdr.Close();
+                // load cache with TTL 10 sec
+                TimeSpan ttl = new TimeSpan(0,0,10); 
+                dbRedis.StringSet($"users{userId}", fetchedUser, expiry:ttl);
 
-            while (rdr.Read())
-            {
-                fetchedUser = rdr[0]+" -- "+rdr[1]+" -- "+rdr[2]+" -- "+rdr[3];
-                Console.WriteLine(fetchedUser);
+            } else {
+                fetchedUser = cacheRes.ToString();
             }
-            rdr.Close();
-            int queryTime = endTime - startTime; 
-
+            //Console.WriteLine(fetchedUser);
+            
+            // return user 
+            stopwatch.Stop();
+            TimeSpan ts = stopwatch.Elapsed;
+            int queryTime = ts.Milliseconds;
             return (fetchedUser, queryTime);
         }
 
@@ -123,10 +133,8 @@ namespace dotnet_caching
             FetchUser(dbRedis, conn, 1);
             
 
-            
-
             while (true) {
-                Console.WriteLine("\nEnter a command: ");
+                Console.Write("\nEnter a command: ");
                 var command = Console.ReadLine();
                 string[] words = command.Split(' ');
                 if (words[0].Equals("quit")) 
