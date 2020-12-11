@@ -81,7 +81,7 @@ namespace dotnet_caching
             // attempt to fetch from cache 
             RedisValue cacheRes = dbRedis.StringGet($"users:{userId}");
             if (cacheRes.IsNullOrEmpty) {
-                Console.WriteLine($"Cache miss for User {userId}... fetching from database");
+                Console.WriteLine($"\nCache miss for User {userId}... fetching from database");
                 // fetch from database 
                 string sql = $"SELECT Id, Name, Country, Email FROM Users WHERE Id='{userId}'";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
@@ -97,10 +97,9 @@ namespace dotnet_caching
                 dbRedis.StringSet($"users:{userId}", fetchedUser, expiry:ttl);
 
             } else {
-                Console.WriteLine($"Cache hit for User {userId}!");
+                Console.WriteLine($"\nCache hit for User {userId}!");
                 fetchedUser = cacheRes.ToString();
             }
-            //Console.WriteLine(fetchedUser);
             
             // return user 
             stopwatch.Stop();
@@ -133,7 +132,6 @@ namespace dotnet_caching
 
             while (true) {
                 Console.Write("\nEnter a command: ");
-                Console.WriteLine("");
                 var command = Console.ReadLine();
                 string[] words = command.Split(' ');
                 if (words[0].Equals("quit")) 
@@ -143,7 +141,7 @@ namespace dotnet_caching
                 else if (words[0].Equals("get")) {
                     var id = Int32.Parse(words[1]); 
                     (string user, int time) res = FetchUser(dbRedis, conn, id);
-                    Console.WriteLine($"\nExecution time: {res.time}\nFetched user: {res.user}");
+                    Console.WriteLine($"Execution time: {res.time} ms\nFetched user: {res.user}");
                 }
             }
 
