@@ -78,30 +78,30 @@ namespace dotnet_caching
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             string fetchedUser = "";
-            // attempt to fetch from cache 
+            // ** 1. attempt to fetch from cache 
             RedisValue cacheRes = dbRedis.StringGet($"users:{userId}");
             if (cacheRes.IsNullOrEmpty) {
                 Console.WriteLine($"\nCache miss for User {userId}... fetching from database");
-                // fetch from database 
+                // ** 2.a.i. cache miss, fetch from database 
                 string sql = $"SELECT Id, Name, Country, Email FROM Users WHERE Id='{userId}'";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 MySqlDataReader rdr = cmd.ExecuteReader();
                 while (rdr.Read())
                 {
                     fetchedUser = rdr[0]+","+rdr[1]+","+rdr[2]+","+rdr[3];
-                    //Console.WriteLine(fetchedUser);
                 }
                 rdr.Close();
-                // load cache with TTL 15 sec
+                // ** 2.a.ii. load cache with TTL 15 sec
                 TimeSpan ttl = new TimeSpan(0,0,15); 
                 dbRedis.StringSet($"users:{userId}", fetchedUser, expiry:ttl);
 
             } else {
+                // ** 2.b. cache hit
                 Console.WriteLine($"\nCache hit for User {userId}!");
                 fetchedUser = cacheRes.ToString();
             }
             
-            // return user 
+            // ** 3. return user 
             stopwatch.Stop();
             TimeSpan ts = stopwatch.Elapsed;
             int queryTime = ts.Milliseconds;
