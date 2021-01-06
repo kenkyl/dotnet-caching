@@ -1,5 +1,5 @@
 # .NET Cache-Aside Demo
-Simple cache aside implementation to demonstrate using Redis as a look-aside cache for MySql. 
+Simple cache aside implementation to demonstrate using Redis as a look-aside cache for MySql. Note that this demo can be run using an alternative Redis or MySql instance by changing the connection information in the _Program_ class.
 
 ## Prerequisites 
 - [.NET SDK](https://dotnet.microsoft.com/download/dotnet-coreps)
